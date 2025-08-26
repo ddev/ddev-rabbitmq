@@ -47,7 +47,7 @@ hook to your `.ddev/config.yaml`:
 ```yaml
 hooks:
   post-start:
-    - exec-host: ddev solrctl apply
+    - exec-host: ddev rabbitmq apply
 ```
 
 Remove rabbitmq configuration but keep default user (`rabbitmq`) and vhost (`/`):
