@@ -1,4 +1,4 @@
-# TYPO3 and RabbitMQ 
+# TYPO3 and RabbitMQ
 
 This is just a simple example on how RabbitMQ can be used
 along with TYPO3.
@@ -69,7 +69,7 @@ class RunTheRabbit implements MiddlewareInterface
     ): ResponseInterface {
         $value = ['some' => 'value'];
         $this->bus->dispatch(new MyMessage($value));
-        
+
         return $handler->handle($request);
     }
 }
