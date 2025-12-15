@@ -5,4 +5,4 @@
 ## Usage: rabbitmqadmin [options] subcommand
 ## Example: ddev rabbitmqadmin --help
 
-rabbitmqadmin -u "$RABBITMQ_DEFAULT_USER" -p "$RABBITMQ_DEFAULT_PASS" $@
+rabbitmqadmin $@

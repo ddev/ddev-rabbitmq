@@ -23,6 +23,8 @@ services:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=rabbitmq
       - RABBITMQ_DEFAULT_VHOST=/
+      - RABBITMQADMIN_USERNAME=rabbitmq
+      - RABBITMQADMIN_PASSWORD=rabbitmq
     labels:
       com.ddev.site-name: ${DDEV_SITENAME}
       com.ddev.approot: ${DDEV_APPROOT}
