@@ -101,6 +101,12 @@ ddev restart
 
 Make sure to commit the `.ddev/.env.rabbitmq` file to version control.
 
+All customization options (use with caution):
+
+| Variable | Flag | Default |
+| -------- | ---- | ------- |
+| `RABBITMQ_DOCKER_IMAGE` | `--rabbitmq-docker-image` | `rabbitmq:4-management` |
+
 ## Examples
 
 * [TYPO3](USAGE.md)
