@@ -32,6 +32,11 @@ services:
       - "rabbitmq:/var/lib/rabbitmq/mnesia"
       - ".:/mnt/ddev_config"
       - "ddev-global-cache:/mnt/ddev-global-cache"
+    x-ddev:
+      describe-info: |
+        User: rabbitmq
+        Pass: rabbitmq
+      ssh-shell: bash
 
 volumes:
   rabbitmq:

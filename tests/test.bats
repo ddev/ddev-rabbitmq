@@ -15,8 +15,6 @@
 setup() {
   set -eu -o pipefail
 
-  bats_require_minimum_version 1.5.0
-
   # Override this variable for your add-on:
   export GITHUB_REPO=ddev/ddev-rabbitmq
 
@@ -41,6 +39,17 @@ setup() {
 }
 
 health_checks() {
+  echo "Check for bash inside the rabbitmq container" >&3
+  run ddev exec -s rabbitmq command -v bash
+  assert_success
+  assert_output --partial "bash"
+
+  echo "Check for credentails in 'ddev describe'" >&3
+  run ddev describe
+  assert_success
+  assert_output --partial "User: rabbitmq"
+  assert_output --partial "Pass: rabbitmq"
+
   echo "Send request from 'web' to the api and see how it is going there" >&3
   run ddev exec "curl -s -u rabbitmq:rabbitmq --fail -H 'Content-Type: application/json' -X GET http://rabbitmq:15672/api/health/checks/alarms"
   assert_success
@@ -135,8 +144,14 @@ health_checks() {
 
 teardown() {
   set -eu -o pipefail
-  ddev delete -Oy ${PROJNAME} >/dev/null 2>&1
-  [ "${TESTDIR}" != "" ] && rm -rf ${TESTDIR}
+  ddev delete -Oy "${PROJNAME}" >/dev/null 2>&1
+  # Persist TESTDIR if running inside GitHub Actions. Useful for uploading test result artifacts
+  # See example at https://github.com/ddev/github-action-add-on-test#preserving-artifacts
+  if [ -n "${GITHUB_ENV:-}" ]; then
+    [ -e "${GITHUB_ENV:-}" ] && echo "TESTDIR=${HOME}/tmp/${PROJNAME}" >> "${GITHUB_ENV}"
+  else
+    [ "${TESTDIR}" != "" ] && rm -rf "${TESTDIR}"
+  fi
 }
 
 @test "install from directory" {
