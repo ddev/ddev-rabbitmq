@@ -94,7 +94,7 @@ You can access the RabbitMQ service through its AMQP protocol inside any DDEV co
 To change the Docker image:
 
 ```bash
-ddev dotenv set .ddev/.env.rabbitmq --rabbitmq-docker-image="rabbitmq:4-management-alpine"
+ddev dotenv set .ddev/.env.rabbitmq --rabbitmq-docker-image="rabbitmq:4-management"
 ddev add-on get ddev/ddev-rabbitmq
 ddev restart
 ```
