@@ -14,6 +14,7 @@
 
 setup() {
   set -eu -o pipefail
+  bats_require_minimum_version 1.5.0
 
   # Override this variable for your add-on:
   export GITHUB_REPO=ddev/ddev-rabbitmq
@@ -70,8 +71,13 @@ health_checks() {
   echo "See expected users" >&3
   run ddev rabbitmqctl list_users --silent --formatter json
   assert_success
-  assert_output --partial '{"user":"rabbitmq","tags":["administrator"]}'
-  assert_output --partial '{"user":"ddev-admin","tags":["administrator,management"]}'
+  _users="$output"
+  run grep '"user":"rabbitmq"' <<< "$_users"
+  assert_success
+  assert_output --partial '"tags":["administrator"]'
+  run grep '"user":"ddev-admin"' <<< "$_users"
+  assert_success
+  assert_output --partial '"tags":["administrator,management"]'
 
   echo "See expected vhosts" >&3
   run ddev rabbitmqctl list_vhosts --silent --formatter json
@@ -82,8 +88,17 @@ health_checks() {
   echo "See expected permissions for users in vhost=ddev-vhost" >&3
   run ddev rabbitmqctl list_permissions --silent --formatter json --vhost=ddev-vhost
   assert_success
-  assert_output --partial '{"user":"ddev-admin","configure":".*","write":".*","read":".*"}'
-  assert_output --partial '{"user":"rabbitmq","configure":".*","write":".*","read":".*"}'
+  _permissions="$output"
+  run grep '"user":"ddev-admin"' <<< "$_permissions"
+  assert_success
+  assert_output --partial '"configure":".*"'
+  assert_output --partial '"write":".*"'
+  assert_output --partial '"read":".*"'
+  run grep '"user":"rabbitmq"' <<< "$_permissions"
+  assert_success
+  assert_output --partial '"configure":".*"'
+  assert_output --partial '"write":".*"'
+  assert_output --partial '"read":".*"'
 
   echo "Delete/wipe custom configuration" >&3
   run ddev rabbitmq wipe
@@ -92,8 +107,12 @@ health_checks() {
   echo "See only rabbitmq default user" >&3
   run ddev rabbitmqctl list_users --silent --formatter json
   assert_success
-  assert_output --partial '{"user":"rabbitmq","tags":["administrator"]}'
-  refute_output --partial '{"user":"ddev-admin","tags":["administrator,management"]}'
+  _users="$output"
+  run grep '"user":"rabbitmq"' <<< "$_users"
+  assert_success
+  assert_output --partial '"tags":["administrator"]'
+  run grep '"user":"ddev-admin"' <<< "$_users"
+  assert_failure
 
   echo "See only '/' vhost exists" >&3
   run ddev rabbitmqctl list_vhosts --silent --formatter json
